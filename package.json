@@ -1,0 +1,67 @@
+{
+  "name": "@wenbin_wb/dsh-remote",
+  "version": "1.0.0",
+  "description": "DeepSeek Harness 局域网远程连接插件：在 DSH 自己的 3080 端口上提供局域网访问地址与扫码连接，让手机直接打开电脑上的 DSH。",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": {
+      "default": "./lib/index.js"
+    },
+    "./client": "./client/client.js",
+    "./locale/*": "./locale/*",
+    "./package.json": "./package.json",
+    "./icon": "./icon.svg"
+  },
+  "files": [
+    "lib",
+    "client",
+    "locale",
+    "docs",
+    "cordis.patch.yml",
+    "icon.svg",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "node scripts/build-client.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "lint": "node scripts/check-port-usage.mjs"
+  },
+  "engines": {
+    "node": "^22.19.0 || >=24.0.0"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-client-connection",
+        "@deepseek-ai/dsh-client-ui-slots",
+        "@deepseek-ai/dsh-client-locale"
+      ]
+    }
+  },
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "lan",
+    "local-area-network",
+    "qr-code",
+    "remote-access",
+    "局域网",
+    "扫码"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VVen1F/dsh-remote.git"
+  },
+  "homepage": "https://github.com/VVen1F/dsh-remote",
+  "bugs": {
+    "url": "https://github.com/VVen1F/dsh-remote/issues"
+  }
+}

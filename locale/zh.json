@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "title": "局域网访问",
+    "description": "在 DSH 的 3080 端口上提供局域网访问地址与二维码，手机扫码即可打开电脑上的 DeepSeek Harness。",
+    "detail": "docs/DETAIL.md"
+  }
+}

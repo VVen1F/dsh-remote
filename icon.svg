@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36" fill="none">
+  <defs>
+    <linearGradient id="dsh-remote-tile" x1="6" y1="4" x2="30" y2="32" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#4A5B7C" />
+      <stop offset="1" stop-color="#26324A" />
+    </linearGradient>
+  </defs>
+  <rect x="4" y="4" width="28" height="28" rx="8" fill="url(#dsh-remote-tile)" />
+  <g stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="12.5" y="9.5" width="8" height="14" rx="2.2" />
+    <path d="M15 20.6h3" />
+    <path d="M20.5 15.5h2.2a2 2 0 0 1 2 2v2.6" opacity="0.9" />
+    <circle cx="24.7" cy="23.1" r="1.9" />
+  </g>
+  <circle cx="24.7" cy="23.1" r="0.85" fill="#FFFFFF" />
+</svg>

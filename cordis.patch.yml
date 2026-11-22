@@ -1,0 +1,8 @@
+# dsh-remote bundle patch.
+#
+# One host row. The plugin never binds a port of its own: it reads the port and
+# bind address of the DSH Web server it runs inside (`ctx.webServer`) and turns
+# them into the LAN address the phone opens.
+- insert:
+    - id: dsh-remote
+      name: '@wenbin_wb/dsh-remote'

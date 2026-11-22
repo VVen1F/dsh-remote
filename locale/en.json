@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "title": "LAN access",
+    "description": "Serves a local-network address and QR code on DSH's 3080 port so a phone can open DeepSeek Harness running on this computer.",
+    "detail": "docs/DETAIL.md"
+  }
+}
