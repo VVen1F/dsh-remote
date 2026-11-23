@@ -414,7 +414,10 @@ function LanPanel({ t }) {
       h('p', { className: `${PREFIX}-intro` }, t('section.intro')),
     ),
 
-    error && h('p', { className: `${PREFIX}-notice`, role: 'alert' }, t('error.load', { message: error })),
+    // 只有「确实给不出可用入口」时才报错。轮询偶发抖动不该在已经能用的面板上
+    // 挂一条红条——那会让用户怀疑一个其实正常的地址。
+    error && !status?.available
+      && h('p', { className: `${PREFIX}-notice`, role: 'alert' }, t('error.load', { message: error })),
 
     status && h(MainCard, {
       t, status, busy, onSelect, onRefresh: () => { void run(ENDPOINTS.refresh); },
