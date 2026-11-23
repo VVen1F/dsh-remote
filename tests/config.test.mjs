@@ -31,9 +31,9 @@ test('RPC 端点两侧一致，且只保留局域网需要的三个', () => {
   assert.deepEqual(clientConstants.ENDPOINTS, ENDPOINTS);
 });
 
-test('失败原因码覆盖监听失败的三种现实情况', () => {
+test('失败原因码覆盖四种现实情况（含「端口在听但会话被拒」）', () => {
   assert.deepEqual(Object.values(GATEWAY_ERRORS).sort(), [
-    'dsh-owns-port', 'listen-failed', 'no-interface', 'port-in-use',
+    'auth-failed', 'dsh-owns-port', 'listen-failed', 'no-interface', 'port-in-use',
   ]);
 });
 

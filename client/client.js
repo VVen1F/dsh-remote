@@ -98,6 +98,7 @@ const zh = {
   'error.portInUse': '端口 ${port} 已被其它程序占用。关闭占用它的程序后重新检测。',
   'error.noInterface': '没有检测到可用的局域网网卡，请先连接 Wi-Fi 或网线。',
   'error.listenFailed': '无法在该地址上监听，请换一个网卡后重试。',
+  'error.authFailed': '本机 DSH 拒绝了这个地址的会话，点右上角重新检测即可恢复。',
   'error.load': '读取状态失败：${message}',
   'error.network': '与 DSH 的连接已断开，稍后会自动重试。',
   'error.actionFailed': '操作失败：${message}',
@@ -130,6 +131,7 @@ const en = {
   'error.portInUse': 'Port ${port} is used by another program. Close it, then check again.',
   'error.noInterface': 'No LAN interface was found. Connect Wi-Fi or an Ethernet cable first.',
   'error.listenFailed': 'Listening on that address failed. Pick another interface and retry.',
+  'error.authFailed': 'The local DSH rejected this address session. Use the refresh icon to recover.',
   'error.load': 'Could not read the status: ${message}',
   'error.network': 'The connection to DSH dropped; retrying automatically.',
   'error.actionFailed': 'Action failed: ${message}',
@@ -366,10 +368,12 @@ function StatusRow({ t, status, busy, onRefresh }) {
 }
 
 /** 复制按钮。 */
-function CopyButton({ t, url }) {
+function CopyButton({ t, url, link }) {
   const [copied, setCopied] = React.useState(false);
   const onClick = React.useCallback(() => {
-    if (!url) return;
+    // 优先复制带票据的地址：它在任何设备上都能直接打开，且短时效。
+    const target = link || url;
+    if (!target) return;
     const done = () => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
@@ -377,7 +381,7 @@ function CopyButton({ t, url }) {
     // 局域网是 HTTP，Clipboard API 在非安全上下文不可用，必须保留 execCommand 兜底。
     const fallback = () => {
       const area = document.createElement('textarea');
-      area.value = url;
+      area.value = target;
       area.style.position = 'fixed';
       area.style.opacity = '0';
       document.body.appendChild(area);
@@ -386,11 +390,11 @@ function CopyButton({ t, url }) {
       document.body.removeChild(area);
     };
     if (navigator.clipboard?.writeText) {
-      navigator.clipboard.writeText(url).then(done).catch(fallback);
+      navigator.clipboard.writeText(target).then(done).catch(fallback);
     } else {
       fallback();
     }
-  }, [url]);
+  }, [url, link]);
 
   return h('button', { type: 'button', className: `${PREFIX}-btn`, onClick, disabled: !url },
     copied ? t('address.copied') : t('address.copy'));
@@ -430,17 +434,19 @@ function MainCard({ t, status, busy, onSelect, onRefresh }) {
 
     // 没有任何可用入口时，只在这一种情况下解释原因
     !url && status?.error && h('p', { className: `${PREFIX}-notice`, role: 'status' },
-      t(status.error.code === 'port-in-use'
-        ? 'error.portInUse'
-        : status.error.code === 'no-interface' ? 'error.noInterface' : 'error.listenFailed',
+      t(({
+        'port-in-use': 'error.portInUse',
+        'no-interface': 'error.noInterface',
+        'auth-failed': 'error.authFailed',
+      })[status.error.code] ?? 'error.listenFailed',
       { port: status?.port ?? LAN_PORT })),
 
     url && h('div', { className: `${PREFIX}-row` },
       h('code', { className: `${PREFIX}-address`, title: url }, url),
-      h(CopyButton, { t, url }),
+      h(CopyButton, { t, url, link: primary.link }),
       h('a', {
         className: `${PREFIX}-btn`,
-        href: url,
+        href: primary.link || url,
         target: '_blank',
         rel: 'noreferrer',
       }, t('address.open')),
