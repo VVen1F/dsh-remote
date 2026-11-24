@@ -35,6 +35,44 @@ dsh plugin --profile desktop add /path/to/dsh-remote
 
 安装后在 **设置 → 局域网访问** 中查看。
 
+## 在手机上「添加工作区」
+
+桌面版把监听地址写死为 `127.0.0.1`，而 DSH 的目录选择器按启动时的宿主情况二选一
+（`@deepseek-ai/dsh-host-directory-picker-auto`）：
+
+- 绑定回环、且没有 `--trusted-host` → **native**：在电脑显示器上弹系统对话框；
+- 其余情况 → **browse**：在网页里打开「选择工作区目录」，可新建文件夹。
+
+桌面版恒为回环，所以默认永远是 native —— 手机点了「添加工作区」后，对话框开在电脑屏幕上，
+手机端看起来「没反应」。**这不是插件的问题，也不需要写任何代码**：DSH 官方文档
+（`dsh-host-directory-picker`「Choosing a backend」）给出的受支持做法是「固定某个交互 =
+直接组合那一对包」。
+
+在 profile 的 patch 里把自适应选择器换成 browse 即可（`~/.dsh/profiles/<profile>/cordis.patch.yml`，
+Windows 为 `%USERPROFILE%\.dsh\profiles\desktop\cordis.patch.yml`）：
+
+```yaml
+# 关掉自适应：它在回环绑定下永远选 native
+- id: directory-picker
+  name: "@deepseek-ai/dsh-host-directory-picker-auto"
+  disabled: true
+
+# 直接组合 browse：宿主能力 + 客户端界面各一行
+- insert:
+    - id: directory-picker-browse
+      name: "@deepseek-ai/dsh-host-directory-picker-browse"
+    - id: directory-picker-browse-ui
+      name: "@deepseek-ai/dsh-client-ui-directory-picker-browse"
+```
+
+重启 DSH 生效。之后桌面端与手机端都会使用同一个网页内目录浏览器：
+
+1. 侧边栏「添加工作区」→ 弹出「选择工作区目录」；
+2. 「新建文件夹」→ 单元格名字 → 目录会**真实创建在宿主机上**；
+3. 选中后点「打开」→ 该目录注册为 Workspace，可直接新建会话。
+
+若想恢复官方自适应行为，删掉这三段即可。
+
 ## 端口
 
 局域网入口固定为 **3080**，理由：
